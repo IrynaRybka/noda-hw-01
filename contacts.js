@@ -7,7 +7,7 @@ async function listContacts() {
   const data = await fs.readFile(contactsPath, "utf8");
   const textJson = data.toString();
   const formatJson = JSON.parse(textJson);
-// console.log(formatJson);
+
   return formatJson;
 }
 
@@ -26,20 +26,28 @@ async function removeContact(contactId) {
   const findContacts = formatJson.filter((contact) => contact.id !== contactId);
   const updateContacts = await fs.writeFile(
     contactsPath,
-    JSON.stringify(findContacts)
+    JSON.stringify(findContacts, null, 1)
   );
-
+  console.log(`The contact ${contactId} was deleted!`);
   return updateContacts;
 }
 
 async function addContact(name, email, phone) {
   const newContent = {
-    id: Number().toString(),
+    id: Date.now().toString(),
     name,
     email,
     phone,
   };
-  await fs.writeFile(contactsPath, newContent, "utf8");
+  const data = await fs.readFile(contactsPath, "utf8");
+  const formatJson = JSON.parse(data.toString());
+  const addNewContact = [...formatJson, newContent];
+  await fs.writeFile(contactsPath, JSON.stringify(addNewContact), "utf8");
+
+  console.log(`
+  Congratulation, you add the new contact ${name}!`);
+  
+  return newContent;
 }
 
 module.exports = {
