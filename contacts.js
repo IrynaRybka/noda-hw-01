@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
+const { v4: uuidv4 } = require('uuid');
 
 const contactsPath = path.join("db", "contacts.json");
 
@@ -34,7 +35,7 @@ async function removeContact(contactId) {
 
 async function addContact(name, email, phone) {
   const newContent = {
-    id: Date.now().toString(),
+    id: uuidv4(),
     name,
     email,
     phone,
